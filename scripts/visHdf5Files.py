@@ -1,4 +1,5 @@
 import os
+import cv2
 import h5py
 import argparse
 import numpy as np
@@ -9,6 +10,7 @@ import json
 parser = argparse.ArgumentParser("Script to visualize hdf5 files")
 
 parser.add_argument('hdf5_paths', nargs='+', help='Path to hdf5 file/s')
+parser.add_argument('view_no', nargs='+', help='Path to hdf5 file/s')
 parser.add_argument('--keys', nargs='+', help='Keys that should be visualized. If none is given, all keys are visualized.', default=None)
 parser.add_argument('--rgb_keys', nargs='+', help='Keys that should be interpreted as rgb data.', default=["colors", "normals"])
 parser.add_argument('--flow_keys', nargs='+', help='Keys that should be interpreted as optical flow data.', default=["forward_flow", "backward_flow"])
@@ -35,6 +37,7 @@ def vis_data(key, data, full_hdf5_data, file_label):
                               "to be installed!")
 
         # Visualize optical flow
+        cv2.imwrite('./1.png', flow_to_rgb(data)) 
         plt.imshow(flow_to_rgb(data), cmap='jet')
     elif key in args.segmap_keys:
         # Try to find labels for each channel in the segcolormap
@@ -65,6 +68,7 @@ def vis_data(key, data, full_hdf5_data, file_label):
             # Visualize channel
             plt.figure()
             plt.title("{} / {} in {}".format(key, channel_label, file_label))
+            cv2.imwrite('./2.png', data[:, :, i])
             plt.imshow(data[:, :, i], cmap='jet')
 
     elif key in args.other_non_rgb_keys:
